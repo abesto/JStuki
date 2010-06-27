@@ -1,0 +1,14 @@
+PROCEDURE Procedure {0}\n
+ENDPROCEDURE Procedure end\n
+
+IF If {0} then\n
+ELSEIF Else if {0} then\n
+ELSE Else\n
+ENDIF End if\n
+
+LOOP Loop while {0}\n
+ENDLOOP End loop\n
+
+INDENT     
+
+NULL

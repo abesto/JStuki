@@ -1,0 +1,14 @@
+PROCEDURE Eljárás {0}\n
+ENDPROCEDURE Eljárás vége\n
+
+IF Ha {0} akkor\n
+ELSEIF Különben ha {0} akkor\n
+ELSE Különben\n
+ENDIF Elágazás vége\n
+
+LOOP Ciklus amíg {0}\n
+ENDLOOP Ciklus vége\n
+
+INDENT   
+
+NULL
