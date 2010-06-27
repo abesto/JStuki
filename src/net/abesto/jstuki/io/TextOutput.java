@@ -7,8 +7,9 @@ import net.abesto.jstuki.io.TextSyntax.Template;
 import net.abesto.jstuki.statements.*;
 
 /**
+ * Used to generate text of a given algorithm with a given syntax
  *
- * @author abesto
+ * @author Nagy Zoltán (abesto0@gmail.com)
  */
 public class TextOutput {
 

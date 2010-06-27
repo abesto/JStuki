@@ -14,7 +14,6 @@ import net.abesto.jstuki.io.JStukiIOException.SyntaxFileException;
  * Examples: pseudo-code, python
  *
  * @author Nagy Zoltán (abesto0@gmail.com)
- * @todo implement writeObject, readObject
  */
 public class TextSyntax {
 

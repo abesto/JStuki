@@ -7,7 +7,6 @@ import java.io.IOException;
  * Custom IO exceptions
  *
  * @author Nagy Zoltán (abesto0@gmail.com)
- * @todo implement writeObject, readObject
  */
 public class JStukiIOException {
 
