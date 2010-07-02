@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>sajt</comment>
+<entry key="ENDPROCEDURE">End procedure
+</entry>
+<entry key="INDENT">    </entry>
+<entry key="ELSEIF">Else if {0} then
+</entry>
+<entry key="NULL"/>
+<entry key="LOOP">Loop while {0}
+</entry>
+<entry key="PROCEDURE">Procedure {0}
+</entry>
+<entry key="IF">If {0} then
+</entry>
+<entry key="ELSE">Else
+</entry>
+<entry key="ENDLOOP">End loop
+</entry>
+<entry key="ENDIF">End if
+</entry>
+</properties>

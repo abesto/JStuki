@@ -2,25 +2,37 @@ package net.abesto.jstuki.io;
 
 import java.text.MessageFormat;
 import java.util.Iterator;
-import net.abesto.jstuki.io.TextSyntax.Template;
 
-import net.abesto.jstuki.statements.*;
+import net.abesto.jstuki.elements.*;
+import net.abesto.jstuki.elements.Exceptions.ProcessorNotSetException;
 
 /**
  * Used to generate text of a given algorithm with a given syntax
  *
  * @author Nagy Zoltán (abesto0@gmail.com)
  */
-public class TextOutput {
+public class TextOutput extends ElementHandler {
 
-    private TextSyntax syntax;
+    public enum Template {
+        INDENT, PROCEDURE, ENDPROCEDURE, LOOP, ENDLOOP, IF, ELSEIF, ELSE, ENDIF, NULL
+    };
+
+    private EnumXML syntax;
     private StringBuilder builder;
     private int depth;
 
-    public TextOutput(TextSyntax s) {
+    public TextOutput(EnumXML s) {
+        super();
+
         syntax = s;
         depth = 0;
         builder = new StringBuilder();
+
+        addHandler(new ProcedureHandler());
+        addHandler(new StatementHandler());
+        addHandler(new ConditionalHandler());
+        addHandler(new BinaryConditionalHandler());
+        addHandler(new IterationHandler());
     }
 
     private void indent() {
@@ -35,57 +47,82 @@ public class TextOutput {
         builder.append(MessageFormat.format(template, args));
     }
 
-    public String renderProcedure(Procedure procedure) {
-        builder.delete(0, builder.length());
-
-        format(Template.PROCEDURE, procedure.getLabel());
-        depth++;
-
-        for (Statement s : procedure.getChildren()) {
-            render(s);
-        }
-
-        depth--;
-        format(Template.ENDPROCEDURE, procedure.getLabel());
-
+    public String renderProcedure(Procedure p) throws ProcessorNotSetException {
+        handle(p);
         return builder.toString();
     }
 
-    private void renderBinaryConditional(BinaryConditional conditional) {
-        indent();
-        format(Template.IF, conditional.getLabel());
-        depth++;
-        render(conditional.getTrueCase());
-        depth--;
+    private class BinaryConditionalHandler implements Handler<BinaryConditional> {
 
-        indent();
-        format(Template.ELSE, "");
-        depth++;
-        render(conditional.getFalseCase());
-        depth--;
+        public void call(BinaryConditional conditional) throws ProcessorNotSetException {
+            indent();
+            format(Template.IF, conditional.getLabel());
+            depth++;
+            renderContainerStatement(conditional.getTrueCase(), Template.IF, Template.NULL);
+            depth--;
 
-        indent();
-        format(Template.ENDIF, "");
-    }
+            indent();
+            format(Template.ELSE, "");
+            depth++;
+            renderContainerStatement(conditional.getFalseCase(), Template.ELSE, Template.ENDIF);
+            depth--;
 
-    private void renderConditional(Conditional conditional) {
-        Iterator<ContainerStatement> cases = conditional.getCases().iterator();
+            indent();
+            format(Template.ENDIF, "");
 
-        renderContainerStatement(cases.next(), Template.IF, Template.NULL);
 
-        while (cases.hasNext()) {
-            renderContainerStatement(cases.next(), Template.ELSEIF, Template.NULL);
         }
-
-        indent();
-        format(Template.ENDIF, "");
     }
 
-    private void renderIteration(Iteration iteration) {
-        renderContainerStatement(iteration, Template.LOOP, Template.ENDLOOP);
+    private class IterationHandler implements Handler<Iteration> {
+
+        public void call(Iteration iteration) throws ProcessorNotSetException {
+            renderContainerStatement((ContainerStatement) iteration, Template.LOOP, Template.ENDLOOP);
+
+        }
     }
 
-    private void renderContainerStatement(ContainerStatement container, Template open, Template close) {
+    private class ConditionalHandler implements Handler<Conditional> {
+
+        public void call(Conditional conditional) throws ProcessorNotSetException {
+            Iterator<ContainerStatement> cases = conditional.getCases().iterator();
+            renderContainerStatement(cases.next(), Template.IF, Template.NULL);
+            while (cases.hasNext()) {
+                renderContainerStatement(cases.next(), Template.ELSEIF, Template.ENDIF);
+            }
+            indent();
+            format(Template.ENDIF, "");
+
+
+        }
+    }
+
+    private class StatementHandler implements Handler<Statement> {
+
+        public void call(Statement statement) throws ProcessorNotSetException {
+            indent();
+            builder.append(statement.getLabel());
+            builder.append("\n");
+
+        }
+    }
+
+    private class ProcedureHandler implements Handler<Procedure> {
+
+        public void call(Procedure procedure) throws ProcessorNotSetException {
+            builder.delete(0, builder.length());
+            format(Template.PROCEDURE, procedure.getLabel());
+            depth++;
+            for (Statement s : procedure.getChildren()) {
+                handle(s);
+            }
+            depth--;
+            format(Template.ENDPROCEDURE, procedure.getLabel());
+
+        }
+    }
+
+    private void renderContainerStatement(ContainerStatement container, Template open, Template close) throws ProcessorNotSetException {
         if (open != Template.NULL) {
             indent();
         }
@@ -96,7 +133,7 @@ public class TextOutput {
         }
 
         for (Statement child : container.getChildren()) {
-            render(child);
+            handle(child);
         }
 
         if (open != Template.NULL) {
@@ -107,26 +144,5 @@ public class TextOutput {
             indent();
         }
         format(close, container.getLabel());
-    }
-
-    private void renderStatement(Statement statement) {
-        indent();
-        builder.append(statement.getLabel());
-        builder.append("\n");
-    }
-
-    private void render(Statement s) {
-        Class c = s.getClass();
-        if (c == BinaryConditional.class) {
-            renderBinaryConditional((BinaryConditional) s);
-        } else if (c == Conditional.class) {
-            renderConditional((Conditional) s);
-        } else if (c == ContainerStatement.class) {
-            renderContainerStatement((ContainerStatement) s, Template.NULL, Template.NULL);
-        } else if (c == Iteration.class) {
-            renderIteration((Iteration) s);
-        } else {
-            renderStatement(s);
-        }
     }
 }

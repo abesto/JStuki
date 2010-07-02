@@ -1,4 +1,4 @@
-package net.abesto.jstuki.statements;
+package net.abesto.jstuki.elements;
 
 /**
  * A conditional with one condition, a true and a false case.

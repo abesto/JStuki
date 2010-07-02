@@ -5,26 +5,25 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.abesto.jstuki.io.*;
-import net.abesto.jstuki.io.JStukiIOException.IncompleteTextSyntaxException;
-import net.abesto.jstuki.io.JStukiIOException.SyntaxFileException;
-import net.abesto.jstuki.statements.*;
+import net.abesto.jstuki.elements.Exceptions.ProcessorNotSetException;
+import net.abesto.jstuki.elements.*;
+import net.abesto.jstuki.io.EnumXML;
+import net.abesto.jstuki.io.EnumXML.IncompleteEnumXMLException;
+import net.abesto.jstuki.io.TextOutput;
 
 /**
  * Simple test that generates valid python code
  */
 public class Main {
 
-    public static void main(String[] args) {
-        TextSyntax syntax = new TextSyntax();
+    public static void main(String[] args) throws ProcessorNotSetException, IOException {
+        EnumXML syntax = new EnumXML<TextOutput.Template>(TextOutput.Template.class);
         TextOutput out = new TextOutput(syntax);
         try {
-            syntax.load(new File("io/syntax/python.ssx"));
+            syntax.load(new File("io/syntax/python.xml"));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SyntaxFileException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IncompleteTextSyntaxException ex) {
+        } catch (IncompleteEnumXMLException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
