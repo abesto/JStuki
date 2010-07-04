@@ -4,6 +4,7 @@ Current state (development, not usable):
  * Class structure of statements and constructs implemented
  * General text output with XML-based syntax descriptor files
  * Structure for handling editing actions
+ * Foundation of the GUI, setLabel action working on an example algorithm
 
 Milestones:
  * Simple GUI interface with text view based on above mentioned syntaxes
