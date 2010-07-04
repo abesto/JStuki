@@ -10,11 +10,18 @@ import java.util.Properties;
 /**
  * (Enum, value)<-->XML serialization
  *
+ * @param <E>
  * @author Nagy Zoltán (abesto0@gmail.com)
  */
 public class EnumXML<E> {
 
+    /**
+     *
+     */
     protected Properties props;
+    /**
+     *
+     */
     protected Class enumClass;
 
     /**
@@ -53,11 +60,22 @@ public class EnumXML<E> {
         }
     }
 
+    /**
+     *
+     * @param enumClass
+     */
     public EnumXML(Class enumClass) {
         props = new Properties();
         this.enumClass = enumClass;
     }
 
+    /**
+     *
+     * @param file
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws net.abesto.jstuki.io.EnumXML.IncompleteEnumXMLException
+     */
     public void load(File file)
         throws FileNotFoundException, IOException, IncompleteEnumXMLException {
         props.loadFromXML(new FileInputStream(file));
@@ -70,6 +88,11 @@ public class EnumXML<E> {
         }
     }
 
+    /**
+     *
+     * @param file
+     * @throws IOException
+     */
     public void save(File file) throws IOException {
         props.storeToXML(new FileOutputStream(file), null);
     }
@@ -78,20 +101,30 @@ public class EnumXML<E> {
      * Check whether all the templates defined in @ref TextSyntax.Template are
      * assigned a template string.
      *
-     * @throws net.abesto.jstuki.io.JStukiIOException.IncompleteTextSyntaxException if not
+     * @throws net.abesto.jstuki.io.EnumXML.IncompleteEnumXMLException
      */
     protected void checkComplete() throws IncompleteEnumXMLException {
         for (Object t : enumClass.getEnumConstants()) {
-            if (getTemplate((E) t) == t.toString()) {
+            if (getTemplate((E) t).equals(t.toString())) {
                 throw new IncompleteEnumXMLException(t);
             }
         }
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
     public String getTemplate(E key) {
         return props.getProperty(key.toString(), key.toString());
     }
 
+    /**
+     *
+     * @param key
+     * @param value
+     */
     protected void setTemplate(E key, String value) {
         props.setProperty(key.toString(), value);
     }

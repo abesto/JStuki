@@ -1,15 +1,15 @@
-Graphical structogram editor aimed at students
+Structogram editor
 
-Current state:
+Current state (development, not usable):
  * Class structure of statements and constructs implemented
- * General text output with basic syntax descriptor files
+ * General text output with XML-based syntax descriptor files
+ * Structure for handling editing actions
 
-Future milestones:
- * Simple Swing interface with text view based on above mentioned syntaxes
-   and complete support for editing, saving, loading algorithms and syntaxes
- * Evaluate and use one of the following to create a zoomable structogram view:
-   - piccolo2d: http://www.piccolo2d.org/index.html
-   - ZVTM: http://zvtm.sourceforge.net/
-   - SpaceGraphJ: http://automenta.com/spacegraph
+Milestones:
+ * Simple GUI interface with text view based on above mentioned syntaxes
+   and complete support for editing, saving, loading algorithms and syntaxes.
+ * Drag&Drop support in the text view for moving elements
+ * Structogram view with
+ * Drag&Drop support in the structogram view
  * Experiments with alternative controls for the structogram view.
-   Example: "add box below" button on the box itself
+   Example: "add box below" button on the bottom of said box

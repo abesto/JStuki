@@ -5,18 +5,20 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.abesto.jstuki.elements.Exceptions.ProcessorNotSetException;
+import net.abesto.jstuki.actions.ActionProxy;
+import net.abesto.jstuki.actions.ActionProxy.ActionDisabledException;
+import net.abesto.jstuki.elements.Exceptions.HandlerNotSetException;
 import net.abesto.jstuki.elements.*;
 import net.abesto.jstuki.io.EnumXML;
 import net.abesto.jstuki.io.EnumXML.IncompleteEnumXMLException;
 import net.abesto.jstuki.io.TextOutput;
 
 /**
- * Simple test that generates valid python code
+ * Simple test that generates valid python code (and then some)
  */
 public class Main {
 
-    public static void main(String[] args) throws ProcessorNotSetException, IOException {
+    public static void main(String[] args) throws HandlerNotSetException, IOException, ActionDisabledException {
         EnumXML syntax = new EnumXML<TextOutput.Template>(TextOutput.Template.class);
         TextOutput out = new TextOutput(syntax);
         try {
@@ -57,5 +59,11 @@ public class Main {
 
         System.out.println(out.renderProcedure(p));
 
+        System.out.println("Now let's set some labels...");
+        ActionProxy proxy = new ActionProxy();
+        proxy.select(i, i.getChildren().get(2));
+        proxy.setLabel("HEY!");
+
+        System.out.println(out.renderProcedure(p));
     }
 }
