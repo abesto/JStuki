@@ -1,6 +1,7 @@
 package net.abesto.jstuki.io;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import net.abesto.jstuki.elements.*;
@@ -14,19 +15,43 @@ import net.abesto.jstuki.elements.Exceptions.HandlerNotSetException;
 public class TextOutput extends ElementHandler {
 
     public enum Template {
-
-        INDENT, PROCEDURE, ENDPROCEDURE, LOOP, ENDLOOP, IF, ELSEIF, ELSE, ENDIF, NULL
+        NAME,
+        NULL, INDENT,
+        PROCEDURE, ENDPROCEDURE,
+        STATEMENT,
+        LOOP, ENDLOOP,
+        IF, ELSEIF, ELSE, ENDIF
     };
-    private EnumXML syntax;
+    private EnumXML<Template> syntax;
     private StringBuilder builder;
+    private ArrayList<Line> lines;
     private int depth;
 
-    public TextOutput(EnumXML s) {
+    public class Line {
+        private String string;
+        private Statement statement;
+
+        public Line(String string, Statement statement) {
+            this.string = string;
+            this.statement = statement;
+        }
+
+        public Statement getStatement() {
+            return statement;
+        }
+
+        public String getString() {
+            return string;
+        }
+    }
+
+    public TextOutput(EnumXML<Template> s) {
         super();
 
         syntax = s;
         depth = 0;
         builder = new StringBuilder();
+        lines = new ArrayList<Line>();
 
         setHandlers(
             new ProcedureHandler(), new StatementHandler(),
@@ -36,26 +61,29 @@ public class TextOutput extends ElementHandler {
 
     private void indent() {
         for (int i = 0; i < depth; i++) {
-            builder.append(syntax.getTemplate(Template.INDENT));
+            builder.append(syntax.getProperty(Template.INDENT));
         }
     }
 
-    private void format(Template t, String s) {
-        String template = syntax.getTemplate(t);
-        Object[] args = {s};
+    private void format(Template t, String string, Statement statement) {
+        String template = syntax.getProperty(t);
+        Object[] args = {string};
         builder.append(MessageFormat.format(template, args));
+        lines.add(new Line(builder.toString(), statement));
+        builder.delete(0, builder.length());
     }
 
-    public String renderProcedure(Procedure p) throws HandlerNotSetException {
+    public ArrayList<Line> renderProcedure(Procedure p) throws HandlerNotSetException {
+        lines.clear();
         handle(p);
-        return builder.toString();
+        return lines;
     }
 
     private class BinaryConditionalHandler implements IHandler<BinaryConditional> {
 
         public void call(BinaryConditional conditional) throws HandlerNotSetException {
             indent();
-            format(Template.IF, conditional.getLabel());
+            format(Template.IF, conditional.getLabel(), conditional.getTrueCase());
             depth++;
             renderContainerStatement(conditional.getTrueCase(), Template.NULL, Template.NULL);
             depth--;
@@ -63,7 +91,7 @@ public class TextOutput extends ElementHandler {
             renderContainerStatement(conditional.getFalseCase(), Template.ELSE, Template.NULL);
 
             indent();
-            format(Template.ENDIF, conditional.getLabel());
+            format(Template.ENDIF, conditional.getLabel(), conditional);
         }
     }
 
@@ -78,15 +106,13 @@ public class TextOutput extends ElementHandler {
     private class ConditionalHandler implements IHandler<Conditional> {
 
         public void call(Conditional conditional) throws HandlerNotSetException {
-            Iterator<ContainerStatement> cases = conditional.getCases().iterator();
+            Iterator<ConditionalCase> cases = conditional.getCases().iterator();
             renderContainerStatement(cases.next(), Template.IF, Template.NULL);
             while (cases.hasNext()) {
                 renderContainerStatement(cases.next(), Template.ELSEIF, Template.NULL);
             }
             indent();
-            format(Template.ENDIF, "");
-
-
+            format(Template.ENDIF, conditional.getLabel(), conditional);
         }
     }
 
@@ -94,23 +120,20 @@ public class TextOutput extends ElementHandler {
 
         public void call(Statement statement) {
             indent();
-            builder.append(statement.getLabel());
-            builder.append("\n");
-
+            format(Template.STATEMENT, statement.getLabel(), statement);
         }
     }
 
     private class ProcedureHandler implements IHandler<Procedure> {
 
         public void call(Procedure procedure) throws HandlerNotSetException {
-            builder.delete(0, builder.length());
-            format(Template.PROCEDURE, procedure.getLabel());
+            format(Template.PROCEDURE, procedure.getLabel(), procedure);
             depth++;
             for (Statement s : procedure.getChildren()) {
                 handle(s);
             }
             depth--;
-            format(Template.ENDPROCEDURE, procedure.getLabel());
+            format(Template.ENDPROCEDURE, procedure.getLabel(), procedure);
 
         }
     }
@@ -119,9 +142,9 @@ public class TextOutput extends ElementHandler {
         throws HandlerNotSetException {
         if (open != Template.NULL) {
             indent();
+            format(open, container.getLabel(), container);
         }
 
-        format(open, container.getLabel());
         if (open != Template.NULL) {
             depth++;
         }
@@ -136,7 +159,7 @@ public class TextOutput extends ElementHandler {
 
         if (close != Template.NULL) {
             indent();
+            format(close, container.getLabel(), container);
         }
-        format(close, container.getLabel());
     }
 }

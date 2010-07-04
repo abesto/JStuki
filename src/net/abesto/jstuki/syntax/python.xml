@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="NAME">Python code</entry>
+<entry key="ENDPROCEDURE">#def {0}</entry>
+<entry key="INDENT">    </entry>
+<entry key="ELSEIF">elif {0}:</entry>
+<entry key="NULL"/>
+<entry key="LOOP">while {0}:</entry>
+<entry key="PROCEDURE">def {0}:</entry>
+<entry key="IF">if {0}:</entry>
+<entry key="ELSE">else:</entry>
+<entry key="ENDLOOP">#while {0}</entry>
+<entry key="ENDIF">#endif</entry>
+<entry key="STATEMENT">{0}
+</entry>
+</properties>

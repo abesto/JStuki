@@ -26,7 +26,12 @@ class ActionBroker extends ElementHandler {
     public ActionBroker() {
         enabled = new EnumMap<ActionType, Boolean>(ActionType.class);
         disabled = new EnumMap<ActionType, Boolean>(ActionType.class);
-        setHandlers(new StatementHandler(), new IterationHandler());
+        setHandlers(
+            new ProcedureHandler(),
+            new StatementHandler(), new IterationHandler(),
+            new ConditionalHandler(), new ConditionalCaseHandler(),
+            new BinaryConditionalHandler(), new BinaryConditionalCaseHandler()
+            );
     }
 
     public void select(Statement... statements) throws HandlerNotSetException {
@@ -40,6 +45,13 @@ class ActionBroker extends ElementHandler {
     }
 
 
+    private class ProcedureHandler implements IHandler<Procedure> {
+
+        public void call(Procedure procedure) {
+            enable( ActionType.SET_LABEL );
+        }
+    }
+
     private class StatementHandler implements IHandler<Statement> {
 
         public void call(Statement statement) {
@@ -47,6 +59,30 @@ class ActionBroker extends ElementHandler {
                 ActionType.SET_LABEL,
                 ActionType.INSERT_BEFORE, ActionType.INSERT_AFTER,
                 ActionType.TO_ITERATION);
+        }
+    }
+
+    private class BinaryConditionalHandler extends StatementHandler {
+        public void call(BinaryConditional binary) {
+            super.call(binary);
+        }
+    }
+
+    private class BinaryConditionalCaseHandler extends BinaryConditionalHandler {
+        public void call(BinaryConditionalCase ccase) {
+            super.call(ccase);
+        }
+    }
+
+    private class ConditionalHandler extends StatementHandler {
+        public void call(Conditional conditional) {
+            super.call(conditional);
+        }
+    }
+
+    private class ConditionalCaseHandler extends ConditionalHandler {
+        public void call(ConditionalCase ccase) {
+            super.call(ccase);
         }
     }
 

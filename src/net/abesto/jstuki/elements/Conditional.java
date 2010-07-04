@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  * A conditional statement with an arbitrary number of cases. Each case is
- * an instance of @ref ContainerStatement.
+ * an instance of @ref ConditionalCase.
  *
  * Would be somewhat faster but less clear if implemented by extending LinkedHashMap.
  *
@@ -13,11 +13,11 @@ import java.util.ArrayList;
  */
 public class Conditional extends Statement {
 
-    private ArrayList<ContainerStatement> cases;
+    private ArrayList<ConditionalCase> cases;
 
     public Conditional() {
         super();
-        cases = new ArrayList<ContainerStatement>();
+        cases = new ArrayList<ConditionalCase>();
     }
 
     public Conditional(String label) throws Exception
@@ -26,17 +26,17 @@ public class Conditional extends Statement {
     }
 
     public void addCase(String condition) {
-        ContainerStatement c = new ContainerStatement(condition);
+        ConditionalCase c = new ConditionalCase(condition);
         c.setParent(this);
         cases.add(c);
     }
 
-    public ArrayList<ContainerStatement> getCases() {
+    public ArrayList<ConditionalCase> getCases() {
         return cases;
     }
 
-    public ContainerStatement getCase(String condition) {
-        for (ContainerStatement c : cases) {
+    public ConditionalCase getCase(String condition) {
+        for (ConditionalCase c : cases) {
             if (c.getLabel().equals(condition)) {
                 return c;
             }

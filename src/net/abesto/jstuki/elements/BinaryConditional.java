@@ -7,24 +7,24 @@ package net.abesto.jstuki.elements;
  * @todo implement writeObject, readObject
  */
 public class BinaryConditional extends Statement {
-    private ContainerStatement trueCase;
-    private ContainerStatement falseCase;
+    private BinaryConditionalCase trueCase;
+    private BinaryConditionalCase falseCase;
 
     public BinaryConditional(String label) {
         super(label);
 
-        trueCase = new ContainerStatement();
+        trueCase = new BinaryConditionalCase(label);
         trueCase.setParent(this);
 
-        falseCase = new ContainerStatement();
+        falseCase = new BinaryConditionalCase(label);
         falseCase.setParent(this);
     }
 
-    public ContainerStatement getFalseCase() {
+    public BinaryConditionalCase getFalseCase() {
         return falseCase;
     }
 
-    public ContainerStatement getTrueCase() {
+    public BinaryConditionalCase getTrueCase() {
         return trueCase;
     }
 }
