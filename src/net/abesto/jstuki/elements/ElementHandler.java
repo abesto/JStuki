@@ -47,6 +47,10 @@ abstract public class ElementHandler {
 
     protected void handle(Statement s) throws HandlerNotSetException {
         Class c = s.getClass();
+        handle(s, c);
+    }
+
+    protected void handle(Statement s, Class c) throws HandlerNotSetException {
         IHandler handler = processors.get(c);
         if (handler == null) {
             throw new HandlerNotSetException(c.getName());

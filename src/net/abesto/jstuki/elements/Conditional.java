@@ -1,6 +1,7 @@
 package net.abesto.jstuki.elements;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * A conditional statement with an arbitrary number of cases. Each case is
@@ -11,7 +12,7 @@ import java.util.ArrayList;
  * @author Nagy Zoltán (abesto0@gmail.com)
  * @todo implement writeObject, readObject
  */
-public class Conditional extends Statement {
+public class Conditional extends Statement implements IPseudoContainer {
 
     private ArrayList<ConditionalCase> cases;
 
@@ -20,8 +21,7 @@ public class Conditional extends Statement {
         cases = new ArrayList<ConditionalCase>();
     }
 
-    public Conditional(String label) throws Exception
-    {
+    public Conditional(String label) throws Exception {
         throw new Exception("Conditional constructor doesn't accept a parameter");
     }
 
@@ -42,5 +42,27 @@ public class Conditional extends Statement {
             }
         }
         return null;
+    }
+
+    public boolean isFirst(Statement statement) {
+        return (cases.indexOf(statement) == 0);
+    }
+
+    public boolean isLast(Statement statement) {
+        return (cases.indexOf(statement) == cases.size() - 1);
+    }
+
+    public void moveUp(Statement statement) {
+        int id = cases.indexOf(statement);
+        if (id > 0) {
+            Collections.swap(cases, id - 1, id);
+        } else {
+            parent.moveUp(this);
+        }
+    }
+
+    public void moveDown(Statement statement) {
+        int id = cases.indexOf(statement);
+        Collections.swap(cases, id, id + 1);
     }
 }

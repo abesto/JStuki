@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class Statement implements Serializable {
 
     protected String label;
-    protected Statement parent;
+    protected IPseudoContainer parent;
 
     public Statement() {
         parent = null;
@@ -31,11 +31,11 @@ public class Statement implements Serializable {
         this.label = label;
     }
 
-    public Statement getParent() {
+    public IPseudoContainer getParent() {
         return parent;
     }
 
-    public void setParent(Statement parent) {
+    public void setParent(IPseudoContainer parent) {
         this.parent = parent;
     }
 }

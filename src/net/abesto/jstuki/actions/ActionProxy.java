@@ -1,7 +1,5 @@
 package net.abesto.jstuki.actions;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -16,21 +14,22 @@ import net.abesto.jstuki.elements.Statement;
  * @author Nagy Zoltán (abesto0@gmail.com)
  */
 public class ActionProxy {
-    private LinkedList<ActionListener> listeners;
+
+    private LinkedList<ElementActionListener> listeners;
 
     public static class ActionDisabledException extends Exception {
+
         public ActionDisabledException(ActionType type) {
             super("Tried to call disabled action ".concat(type.toString()));
         }
     }
-
     private ActionBroker broker;
     private ArrayList<Statement> targets;
 
     public ActionProxy() {
         broker = new ActionBroker();
         targets = new ArrayList<Statement>();
-        listeners = new LinkedList<ActionListener>();
+        listeners = new LinkedList<ElementActionListener>();
     }
 
     public void select(Statement... statements) throws HandlerNotSetException {
@@ -44,16 +43,21 @@ public class ActionProxy {
         }
     }
 
-    public boolean removeActionListener(ActionListener l) {
+    public boolean removeActionListener(ElementActionListener l) {
         return listeners.remove(l);
     }
 
-    public boolean addActionListener(ActionListener l) {
+    public boolean addActionListener(ElementActionListener l) {
         return listeners.add(l);
     }
 
-    private void fireActionEvent(ActionEvent e) {
-        for (ActionListener l : listeners) {
+    public boolean isEnabled(ActionType type) {
+        return broker.isEnabled(type);
+    }
+
+    private void fireActionEvent(ActionType type) {
+        for (ElementActionListener l : listeners) {
+            ElementActionEvent e = new ElementActionEvent(targets, type.ordinal());
             l.actionPerformed(e);
         }
     }
@@ -66,10 +70,23 @@ public class ActionProxy {
         for (Statement target : targets) {
             target.setLabel(label);
         }
-        fireActionEvent(new ActionEvent(
-            this,
-            ActionType.SET_LABEL.ordinal(),
-            null
-            ));
+        fireActionEvent(ActionType.SET_LABEL);
     }
+
+    public void moveUp() throws ActionDisabledException {
+        checkActionEnabled(ActionType.MOVE_UP);
+        for (Statement target : targets) {
+            target.getParent().moveUp(target);
+        }
+        fireActionEvent(ActionType.MOVE_UP);
+    }
+
+    public void moveDown() throws ActionDisabledException {
+        checkActionEnabled(ActionType.MOVE_DOWN);
+        for (Statement target : targets) {
+            target.getParent().moveDown(target);
+        }
+        fireActionEvent(ActionType.MOVE_DOWN);
+    }
+
 }

@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.abesto.jstuki.elements.Exceptions.HandlerNotSetException;
 import net.abesto.jstuki.elements.Procedure;
+import net.abesto.jstuki.elements.Statement;
 import net.abesto.jstuki.io.EnumXML;
 import net.abesto.jstuki.io.EnumXML.IncompleteEnumXMLException;
 import net.abesto.jstuki.io.EnumXML.NoNameInEnumException;
@@ -16,6 +18,7 @@ import net.abesto.jstuki.io.EnumXMLDir;
 import net.abesto.jstuki.io.TextOutput;
 
 public class ViewsTabbedPane extends javax.swing.JTabbedPane {
+
     private ArrayList<CodeListing> codeListings;
 
     public ViewsTabbedPane() {
@@ -59,6 +62,12 @@ public class ViewsTabbedPane extends javax.swing.JTabbedPane {
     public void addListSelectionListener(javax.swing.event.ListSelectionListener l) {
         for (CodeListing listing : codeListings) {
             listing.addListSelectionListener(l);
+        }
+    }
+
+    void select(ArrayList<Statement> statements) {
+        for (CodeListing listing : codeListings) {
+            listing.setSelectedStatements(statements);
         }
     }
 }

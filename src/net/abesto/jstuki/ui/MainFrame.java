@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import net.abesto.jstuki.actions.ElementActionEvent;
+import net.abesto.jstuki.actions.ElementActionListener;
 import net.abesto.jstuki.elements.*;
 
 public class MainFrame extends javax.swing.JFrame {
@@ -23,9 +25,10 @@ public class MainFrame extends javax.swing.JFrame {
         });
 
         // actionPanel action -> view update
-        actionsPanel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        actionsPanel.addActionListener(new ElementActionListener() {
+            public void actionPerformed(ElementActionEvent e) {
                 viewTabs.display(p);
+                viewTabs.select(e.getSource());
             }
         });
         displayTest();
@@ -89,8 +92,11 @@ public class MainFrame extends javax.swing.JFrame {
         Conditional mod = new Conditional();
         mod.addCase("a % 2 == 0");
         mod.addCase("a % 2 == 1");
+        mod.addCase("Valami hülyeség");
         mod.getCase("a % 2 == 0").addChild(new Statement("print 'Printed from conditional: ',a"));
         mod.getCase("a % 2 == 1").addChild(new Statement("pass"));
+        mod.getCase("Valami hülyeség").addChild(new Statement("jaj hát ilyen elő se fordulhat"));
+        mod.getCase("Valami hülyeség").addChild(new Statement("ésakkor ez sincs"));
 
         i.addChild(mod);
 
