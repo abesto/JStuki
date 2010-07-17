@@ -2,6 +2,7 @@ package net.abesto.jstuki.elements;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import net.abesto.jstuki.elements.Exceptions.ChildNotFoundException;
 
 /**
  * A conditional statement with an arbitrary number of cases. Each case is
@@ -64,5 +65,26 @@ public class Conditional extends Statement implements IPseudoContainer {
     public void moveDown(Statement statement) {
         int id = cases.indexOf(statement);
         Collections.swap(cases, id, id + 1);
+    }
+
+    public void replace(Statement victim, Statement target)
+        throws ChildNotFoundException, UnsupportedOperationException {
+        try {
+            ConditionalCase tcase = (ConditionalCase) target;
+            ConditionalCase vcase = (ConditionalCase) victim;
+
+            int index = cases.indexOf(vcase);
+            if (index != -1) {
+                tcase.parent = this;
+                cases.set(index, tcase);
+                tcase.addChildren(vcase.getChildren());
+            } else {
+                throw new Exceptions.ChildNotFoundException();
+            }
+        } catch (ClassCastException e) {
+            // The cast of victim or target to ConditionalCase failed;
+            // we want to replace this Conditional, not one of it's children.
+            parent.replace(this, target);
+        }
     }
 }

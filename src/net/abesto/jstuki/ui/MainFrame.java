@@ -1,7 +1,5 @@
 package net.abesto.jstuki.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -28,7 +26,7 @@ public class MainFrame extends javax.swing.JFrame {
         actionsPanel.addActionListener(new ElementActionListener() {
             public void actionPerformed(ElementActionEvent e) {
                 viewTabs.display(p);
-                viewTabs.select(e.getSource());
+                viewTabs.setSelectedStatements(e.getSource());
             }
         });
         displayTest();

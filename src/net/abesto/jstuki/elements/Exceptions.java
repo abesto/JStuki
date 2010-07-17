@@ -6,4 +6,6 @@ public class Exceptions {
             super("Handler not set for class '".concat(classname));
         }
     }
+
+    static public class ChildNotFoundException extends Exception {}
 }

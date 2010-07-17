@@ -2,7 +2,7 @@ package net.abesto.jstuki.ui;
 
 import java.awt.Font;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import javax.swing.event.ListSelectionListener;
 import net.abesto.jstuki.elements.Exceptions.HandlerNotSetException;
 import net.abesto.jstuki.elements.Procedure;
 import net.abesto.jstuki.elements.Statement;
@@ -46,6 +46,19 @@ public class CodeListing extends javax.swing.JList {
         setSelectedIndices(pass);
     }
 
+    public void removeAllListSelectionListeners()
+    {
+        for (ListSelectionListener listener : getListSelectionListeners()) {
+            removeListSelectionListener(listener);
+        }
+    }
+
+    public void addListSelectionListeners(ListSelectionListener[] listeners) {
+        for (ListSelectionListener listener : listeners) {
+            addListSelectionListener(listener);
+        }
+    }
+
     public Statement getSelectedStatement() {
         int index = getSelectedIndex();
         if (index == -1) {
@@ -53,5 +66,13 @@ public class CodeListing extends javax.swing.JList {
         } else {
             return lines.get(getSelectedIndex()).getStatement();
         }
+    }
+
+    public ArrayList<Statement> getSelectedStatements() {
+        ArrayList<Statement> statements = new ArrayList<Statement>();
+        for (int index : getSelectedIndices()) {
+            statements.add(lines.get(index).getStatement());
+        }
+        return statements;
     }
 }

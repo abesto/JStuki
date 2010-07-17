@@ -3,8 +3,12 @@ package net.abesto.jstuki.actions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.abesto.jstuki.elements.Exceptions.ChildNotFoundException;
 
 import net.abesto.jstuki.elements.Exceptions.HandlerNotSetException;
+import net.abesto.jstuki.elements.Iteration;
 import net.abesto.jstuki.elements.Statement;
 
 /**
@@ -65,28 +69,56 @@ public class ActionProxy {
     /******************************
      * And now the actual actions *
      ******************************/
-    public void setLabel(String label) throws ActionDisabledException {
-        checkActionEnabled(ActionType.SET_LABEL);
+    public void call(ActionType type, Object... params) throws ActionDisabledException {
+        checkActionEnabled(type);
+        ArrayList<Statement> results = new ArrayList<Statement>();
+        // TODO Refactor this
         for (Statement target : targets) {
-            target.setLabel(label);
+            switch (type) {
+                case SET_LABEL:
+                    results.add(setLabel(target, (String) params[0]));
+                    break;
+                case MOVE_UP:
+                    results.add(moveUp(target));
+                    break;
+                case MOVE_DOWN:
+                    results.add(moveDown(target));
+                    break;
+                case TO_ITERATION:
+                    results.add(toIteration(target));
+                    break;
+            }
         }
-        fireActionEvent(ActionType.SET_LABEL);
+        targets = results;
+        fireActionEvent(type);
     }
 
-    public void moveUp() throws ActionDisabledException {
-        checkActionEnabled(ActionType.MOVE_UP);
-        for (Statement target : targets) {
-            target.getParent().moveUp(target);
-        }
-        fireActionEvent(ActionType.MOVE_UP);
+    public Statement setLabel(Statement target, String label) {
+        target.setLabel(label);
+        return target;
     }
 
-    public void moveDown() throws ActionDisabledException {
-        checkActionEnabled(ActionType.MOVE_DOWN);
-        for (Statement target : targets) {
-            target.getParent().moveDown(target);
-        }
-        fireActionEvent(ActionType.MOVE_DOWN);
+    public Statement moveUp(Statement target) {
+        target.getParent().moveUp(target);
+        return target;
     }
 
+    public Statement moveDown(Statement target) {
+        target.getParent().moveDown(target);
+        return target;
+    }
+
+    public Statement toIteration(Statement target) {
+        Iteration i = new Iteration(target.getLabel());
+        try {
+            target.getParent().replace(target, i);
+            if (i.getChildren().isEmpty()) {
+                i.addChild(new Statement("SKIP"));
+            }
+            return i;
+        } catch (ChildNotFoundException ex) {
+            Logger.getLogger(ActionProxy.class.getName()).log(Level.SEVERE, null, ex);
+            return target;
+        }
+    }
 }

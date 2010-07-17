@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/ui/ActionsPanel.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/actions/ActionBroker.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/actions/ActionProxy.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/elements/ContainerStatement.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/elements/Statement.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/elements/BinaryConditional.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/elements/Conditional.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/elements/ElementHandler.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/elements/BinaryConditionalCase.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/elements/ConditionalCase.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/elements/IPseudoContainer.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/elements/Procedure.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/io/TextOutput.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/ui/CodeListing.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/ui/ViewsTabbedPane.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/ui/MainFrame.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/actions/ElementActionEvent.java</file>
+        <file>file:/home/abesto/proj/JStuki/src/net/abesto/jstuki/actions/ElementActionListener.java</file>
+    </open-files>
 </project-private>

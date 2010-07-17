@@ -26,6 +26,7 @@ public class ActionsPanel extends javax.swing.JPanel {
         setControls(ActionType.SET_LABEL, this.btnSetLabel, this.txtLabel);
         setControls(ActionType.MOVE_UP, this.btnMoveUp);
         setControls(ActionType.MOVE_DOWN, this.btnMoveDown);
+        setControls(ActionType.TO_ITERATION, this.btnToIteration);
     }
 
     private void setControls(ActionType action, JComponent... components) {
@@ -59,6 +60,7 @@ public class ActionsPanel extends javax.swing.JPanel {
         btnMoveDown = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtDebug = new javax.swing.JTextArea();
+        btnToIteration = new javax.swing.JButton();
 
         btnSetLabel.setText("Set Label");
         btnSetLabel.addActionListener(new java.awt.event.ActionListener() {
@@ -85,6 +87,13 @@ public class ActionsPanel extends javax.swing.JPanel {
         txtDebug.setRows(5);
         jScrollPane1.setViewportView(txtDebug);
 
+        btnToIteration.setText("Iteration");
+        btnToIteration.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnToIterationActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -100,7 +109,8 @@ public class ActionsPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnMoveUp)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnMoveDown)))
+                        .addComponent(btnMoveDown))
+                    .addComponent(btnToIteration))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -114,7 +124,9 @@ public class ActionsPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnMoveUp)
                     .addComponent(btnMoveDown))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 142, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnToIteration)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -122,7 +134,7 @@ public class ActionsPanel extends javax.swing.JPanel {
 
     private void btnSetLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetLabelActionPerformed
         try {
-            proxy.setLabel(txtLabel.getText());
+            proxy.call(ActionType.SET_LABEL, txtLabel.getText());
             debug("Set label action");
         } catch (ActionDisabledException ex) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
@@ -131,7 +143,7 @@ public class ActionsPanel extends javax.swing.JPanel {
 
     private void btnMoveUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveUpActionPerformed
         try {
-            proxy.moveUp();
+            proxy.call(ActionType.MOVE_UP);
             debug("Move up action");
         } catch (ActionDisabledException ex) {
             Logger.getLogger(ActionsPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -140,17 +152,27 @@ public class ActionsPanel extends javax.swing.JPanel {
 
     private void btnMoveDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveDownActionPerformed
         try {
-            proxy.moveDown();
+            proxy.call(ActionType.MOVE_DOWN);
             debug("Move down action");
         } catch (ActionDisabledException ex) {
             Logger.getLogger(ActionsPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnMoveDownActionPerformed
 
+    private void btnToIterationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnToIterationActionPerformed
+        try {
+            proxy.call(ActionType.TO_ITERATION);
+            debug("To iteration action");
+        } catch (ActionDisabledException ex) {
+            Logger.getLogger(ActionsPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnToIterationActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnMoveDown;
     private javax.swing.JButton btnMoveUp;
     private javax.swing.JButton btnSetLabel;
+    private javax.swing.JButton btnToIteration;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea txtDebug;
     private javax.swing.JTextField txtLabel;

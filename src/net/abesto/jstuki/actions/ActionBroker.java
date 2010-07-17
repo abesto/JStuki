@@ -30,8 +30,7 @@ class ActionBroker extends ElementHandler {
             new ProcedureHandler(),
             new StatementHandler(), new IterationHandler(),
             new ConditionalHandler(), new ConditionalCaseHandler(),
-            new BinaryConditionalHandler(), new BinaryConditionalCaseHandler()
-            );
+            new BinaryConditionalHandler(), new BinaryConditionalCaseHandler());
     }
 
     public void select(Statement... statements) throws HandlerNotSetException {
@@ -43,7 +42,6 @@ class ActionBroker extends ElementHandler {
             handle(statement);
         }
     }
-
 
     private class ProcedureHandler implements IHandler<Procedure> {
 
@@ -58,7 +56,6 @@ class ActionBroker extends ElementHandler {
         public void call(Statement statement) {
             enable(
                 ActionType.SET_LABEL,
-                ActionType.INSERT_BEFORE, ActionType.INSERT_AFTER,
                 ActionType.TO_ITERATION);
             if (!statement.getParent().isFirst(statement)) {
                 enable(ActionType.MOVE_UP);
@@ -69,45 +66,62 @@ class ActionBroker extends ElementHandler {
         }
     }
 
-    private class BinaryConditionalHandler implements IHandler<BinaryConditional> {
+    private class BinaryConditionalHandler implements
+        IHandler<BinaryConditional> {
+
         public void call(BinaryConditional binary) throws HandlerNotSetException {
             handle(binary, Statement.class);
+            disable(ActionType.TO_ITERATION);
         }
     }
 
-    private class BinaryConditionalCaseHandler implements IHandler<BinaryConditionalCase> {
+    private class BinaryConditionalCaseHandler implements
+        IHandler<BinaryConditionalCase> {
+
         public void call(BinaryConditionalCase bcase) throws HandlerNotSetException {
-            handle((BinaryConditional)bcase.getParent());
+            handle((BinaryConditional) bcase.getParent());
         }
     }
 
     private class ConditionalHandler implements IHandler<Conditional> {
+
         public void call(Conditional conditional) throws HandlerNotSetException {
             handle(conditional, Statement.class);
             disable(ActionType.SET_LABEL);
-        }
-    }
-
-    private class ConditionalCaseHandler implements IHandler<ConditionalCase> {
-        public void call(ConditionalCase ccase) throws HandlerNotSetException {
-            handle(ccase, Statement.class);
-            Conditional c = (Conditional) ccase.getParent();
-            if (c.isFirst(ccase) && !c.getParent().isFirst(c)) {
-                // This is the first cond.case, but we'll move the whole conditional
-                enable(ActionType.MOVE_UP);
+            // Can be converted to iteration if there's exactly one case
+            if (conditional.getCases().size() != 1) {
+                disable(ActionType.TO_ITERATION);
             }
         }
     }
 
-    private class IterationHandler extends StatementHandler {
+    private class ConditionalCaseHandler implements IHandler<ConditionalCase> {
 
-        public void call(Iteration iteration) {
-            super.call(iteration);
+        public void call(ConditionalCase ccase) throws HandlerNotSetException {
+            handle(ccase, Statement.class);
+            Conditional c = (Conditional) ccase.getParent();
+            if (c.isFirst(ccase) && !c.getParent().isFirst(c)) {
+                // This is the first cond.case, so we'll move the whole conditional
+                enable(ActionType.MOVE_UP);
+            }
+
+            // Convert to iteration only if this is the only condition
+            if (!c.isFirst(ccase) || !c.isLast(ccase)) {
+                disable(ActionType.TO_ITERATION);
+            }
+        }
+    }
+
+    private class IterationHandler implements IHandler<Iteration> {
+
+        public void call(Iteration iteration) throws HandlerNotSetException {
+            handle(iteration, Statement.class);
             disable(ActionType.TO_ITERATION);
             enable(ActionType.TO_STATEMENT);
         }
     }
 
+    //// Helper functions ////
     private void disable(ActionType... types) {
         for (ActionType type : types) {
             disabled.put(type, true);

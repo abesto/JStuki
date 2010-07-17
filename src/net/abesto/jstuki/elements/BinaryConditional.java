@@ -1,5 +1,7 @@
 package net.abesto.jstuki.elements;
 
+import net.abesto.jstuki.elements.Exceptions.ChildNotFoundException;
+
 /**
  * A conditional with one condition, a true and a false case.
  *
@@ -42,5 +44,21 @@ public class BinaryConditional extends Statement implements IPseudoContainer {
 
     public void moveDown(Statement s) {
         parent.moveDown(this);
+    }
+
+    public void replace(Statement victim, Statement target) throws ChildNotFoundException {
+        BinaryConditionalCase bcase = (BinaryConditionalCase) target;
+        if (trueCase.equals(victim)) {
+            bcase.addChildren(trueCase.getChildren());
+            bcase.parent = this;
+            trueCase = bcase;
+        } else if (falseCase.equals(victim)) {
+            bcase.addChildren(falseCase.getChildren());
+            bcase.parent = this;
+            falseCase = bcase;
+        } else {
+            throw new Exceptions.ChildNotFoundException();
+        }
+
     }
 }

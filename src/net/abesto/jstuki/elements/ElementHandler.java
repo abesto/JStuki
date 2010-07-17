@@ -45,11 +45,22 @@ abstract public class ElementHandler {
         }
     }
 
+    /**
+     * Run a handler for an object, based only on it's class
+     *
+     * @param s The object to handle
+     * @throws net.abesto.jstuki.elements.Exceptions.HandlerNotSetException
+     */
     protected void handle(Statement s) throws HandlerNotSetException {
         Class c = s.getClass();
         handle(s, c);
     }
 
+    /**
+     * Handle s using the handler associated with c
+     *
+     * @throws net.abesto.jstuki.elements.Exceptions.HandlerNotSetException
+     */
     protected void handle(Statement s, Class c) throws HandlerNotSetException {
         IHandler handler = processors.get(c);
         if (handler == null) {
